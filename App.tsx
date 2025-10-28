@@ -1,12 +1,12 @@
-
 import React, { useState, useCallback } from 'react';
 import { Bill } from './types';
 import CreateBillView from './components/CreateBillView';
 import SearchView from './components/SearchView';
-import { PlusCircleIcon, SearchIcon } from './components/Icons';
+import PrintView from './components/PrintView';
+import { PlusCircleIcon, SearchIcon, PrintIcon } from './components/Icons';
 import Toast from './components/Toast';
 
-type Tab = 'create' | 'search';
+type Tab = 'create' | 'search' | 'print';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('create');
@@ -71,7 +71,7 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen font-sans">
       <header className="bg-white shadow-md sticky top-0 z-10">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 pt-2">
           <h1 className="text-2xl font-bold text-sky-600 py-4">Bill Manager</h1>
           <div className="flex border-b">
             <TabButton
@@ -86,6 +86,12 @@ const App: React.FC = () => {
               isActive={activeTab === 'search'}
               onClick={() => setActiveTab('search')}
             />
+            <TabButton
+              label="Print Bill"
+              icon={<PrintIcon />}
+              isActive={activeTab === 'print'}
+              onClick={() => setActiveTab('print')}
+            />
           </div>
         </div>
       </header>
@@ -93,6 +99,7 @@ const App: React.FC = () => {
       <main className="container mx-auto p-4">
         {activeTab === 'create' && <CreateBillView onSaveBill={handleSaveBill} />}
         {activeTab === 'search' && <SearchView bills={bills} onSaveBill={handleSaveBill} />}
+        {activeTab === 'print' && <PrintView bills={bills} />}
       </main>
 
       {toast && <Toast message={toast.message} type={toast.type} onDismiss={() => setToast(null)} />}
