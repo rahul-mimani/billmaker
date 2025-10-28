@@ -1,0 +1,5 @@
+{
+  "name": "Firestore Bill Manager",
+  "description": "An application to create, search, and manage customer bills with real-time updates, designed to simulate a Firebase Firestore backend.",
+  "requestFramePermissions": []
+}
