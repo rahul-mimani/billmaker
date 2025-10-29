@@ -2,6 +2,8 @@ import React, { useState, useCallback } from 'react';
 import { Bill, Product } from '../types';
 import { PlusIcon, TrashIcon, EyeIcon } from './Icons';
 import BillSummaryModal from './BillSummaryModal';
+import CustomerInput from './CustomerInput';
+import ProductInput from './ProductInput';
 
 interface CreateBillViewProps {
   onSaveBill: (bill: Partial<Bill>) => Promise<Bill>;
@@ -9,17 +11,19 @@ interface CreateBillViewProps {
 
 const CreateBillView: React.FC<CreateBillViewProps> = ({ onSaveBill }) => {
   const [currentBill, setCurrentBill] = useState<Partial<Bill> | null>(null);
+  const [customerName, setCustomerName] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
 
   const startNewBill = () => {
     setCurrentBill({ customerName: '', products: [] });
+    setCustomerName('');
     setIsCreating(true);
   };
   
   const validateBill = (bill: Partial<Bill> | null): boolean => {
-      if (!bill || !bill.customerName?.trim()) return false;
+      if (!bill || !customerName?.trim()) return false;
       if (!bill.products || bill.products.length === 0) return false;
       return bill.products.every(p => 
           p.name.trim() && 
@@ -33,7 +37,10 @@ const CreateBillView: React.FC<CreateBillViewProps> = ({ onSaveBill }) => {
     if (currentBill && validateBill(currentBill)) {
       setIsSaving(true);
       try {
-        const savedBill = await onSaveBill(currentBill);
+        const savedBill = await onSaveBill({
+          ...currentBill,
+          customerName
+        });
         // Reset form for next entry after successful save
         startNewBill();
       } catch (error) {
@@ -43,10 +50,6 @@ const CreateBillView: React.FC<CreateBillViewProps> = ({ onSaveBill }) => {
       }
     }
   }, [onSaveBill, currentBill]);
-
-  const updateCustomerName = (name: string) => {
-    setCurrentBill(prev => prev ? { ...prev, customerName: name } : null);
-  };
   
   const updateProduct = (index: number, field: keyof Product, value: string) => {
       setCurrentBill(prev => {
@@ -104,14 +107,7 @@ const CreateBillView: React.FC<CreateBillViewProps> = ({ onSaveBill }) => {
         <label htmlFor="customerName" className="block text-sm font-medium text-slate-600 mb-1">
           Customer Name
         </label>
-        <input
-          type="text"
-          id="customerName"
-          value={currentBill?.customerName || ''}
-          onChange={(e) => updateCustomerName(e.target.value)}
-          placeholder="Enter customer's name"
-          className="w-full px-4 py-2 border border-slate-300 rounded-md focus:ring-sky-500 focus:border-sky-500 transition bg-white text-slate-900"
-        />
+        <CustomerInput value={customerName} onChange={setCustomerName}></CustomerInput>
       </div>
 
       <div className="space-y-4">
@@ -129,14 +125,7 @@ const CreateBillView: React.FC<CreateBillViewProps> = ({ onSaveBill }) => {
             </div>
             <div>
                 <label htmlFor={`name-${product.id}`} className="block text-sm font-medium text-slate-600 mb-1">Product Name</label>
-                <input
-                    id={`name-${product.id}`}
-                    type="text"
-                    value={product.name}
-                    onChange={(e) => updateProduct(index, 'name', e.target.value)}
-                    placeholder="Product Name"
-                    className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-sky-500 focus:border-sky-500 transition bg-white text-slate-900"
-                />
+                <ProductInput value={product.name} onChange = {val => updateProduct(index, 'name', val)}></ProductInput>
             </div>
              <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -173,7 +162,6 @@ const CreateBillView: React.FC<CreateBillViewProps> = ({ onSaveBill }) => {
                         inputMode="decimal"
                         value={product.price}
                         onChange={(e) => updateProduct(index, 'price', e.target.value)}
-                        placeholder="0.00"
                         className="w-full pl-3 pr-12 py-2 border border-slate-300 rounded-md focus:ring-sky-500 focus:border-sky-500 transition bg-white text-slate-900 text-right"
                     />
                      <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500">
