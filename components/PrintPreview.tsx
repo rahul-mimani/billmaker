@@ -1,6 +1,7 @@
 import React from 'react';
 import { Bill, Product } from '../types';
 import { PrintIcon } from './Icons';
+import { generateBillsPDF } from "../utils/generateBillsPDF";
 
 interface PrintPreviewProps {
     bills: Bill[];
@@ -18,8 +19,9 @@ const PrintPreview: React.FC<PrintPreviewProps> = ({ bills, onBack }) => {
         }, 0);
     };
 
-    const handlePrint = () => {
-        window.print();
+    const handlePrintAll = async () => {
+        console.log("bills are here" + bills);
+        await generateBillsPDF(bills);
     };
     
     return (
@@ -27,7 +29,7 @@ const PrintPreview: React.FC<PrintPreviewProps> = ({ bills, onBack }) => {
             <div className="flex justify-between items-center mb-6 no-print">
                  <button onClick={onBack} className="text-sky-600 hover:underline">&larr; Back to selection</button>
                  <button
-                    onClick={handlePrint}
+                    onClick={handlePrintAll}
                     className="flex items-center gap-2 bg-slate-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-slate-700 transition"
                 >
                     <PrintIcon />
@@ -36,7 +38,7 @@ const PrintPreview: React.FC<PrintPreviewProps> = ({ bills, onBack }) => {
             </div>
             
             <div className="space-y-8">
-            {bills.map(bill => {
+            {bills.map((bill: { products: any[]; id: any; customerName: any; billNumber: any; createdAt: { toLocaleDateString: () => any; }; }) => {
                 const grandTotal = calculateTotal(bill.products);
                 return (
                     <div key={bill.id} className="printable-bill bg-white p-8 border rounded-lg shadow-lg mx-auto">

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firestore Bill Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+    @media print {
+        /* Hide the main app header and any element specifically marked as no-print */
+        header, .no-print {
+            display: none !important;
+        }
+
+        /* Reset padding on main content area for printing */
+        main {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        /* The printable-bill styles take over to format the output */
+        .printable-bill {
+            margin: 0;
+            padding: 5mm;
+            width: 105mm; /* Approx. 1/4 A4 width */
+            height: 148.5mm; /* Approx. 1/4 A4 height */
+            box-shadow: none;
+            border: 1px solid #ccc;
+            border-radius: 0;
+            page-break-after: always; /* Ensure each bill is on a new page */
+            font-family: sans-serif;
+            font-size: 10pt;
+            box-sizing: border-box;
+        }
+        .printable-bill:last-of-type {
+            page-break-after: auto; /* Avoid extra blank page at the end */
+        }
+    }
+</style>
+<link rel="stylesheet" href="/index.css">
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
+  }
+}
+</script>
+  <script type="module" crossorigin src="/assets/index-eLSDXwuI.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800">
+    <div id="root"></div>
+</body>
+</html>
